@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Company Chatbot</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Chatbox Styling */
+        #chatBox {
+            width: 100%;
+            max-width: 500px;
+            height: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 80%;
+            display: inline-block;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        /* Bot's Message */
+        .chat-message.bot {
+            background-color: #e0f7fa;
+            align-self: flex-start;
+            color: #00796b;
+        }
+
+        /* User's Message */
+        .chat-message.user {
+            background-color: #c8e6c9;
+            align-self: flex-end;
+            color: #2c6e3f;
+        }
+
+        /* Input Box */
+        #userInput {
+            width: 80%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border-radius: 30px;
+            border: 4px solid #ccc;
+            margin-right: 10px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        #userInput:focus {
+            border-color: #00796b;
+            outline: none;
+        }
+
+        /* Send Button */
+        #sendBtn {
+            padding: 12px 20px;
+            background-color: #006979;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #sendBtn:hover {
+            background-color: #004d40;
+        }
+
+        /* Chatbox Header */
+        #chatHeader {
+            font-size: 20px;
+            font-weight: bold;
+            color: #794b00;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            #chatBox {
+                width: 100%;
+                height: 400px;
+                padding: 15px;
+            }
+
+            #userInput {
+                width: 70%;
+                padding: 10px;
+            }
+
+            #sendBtn {
+                width: 25%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chatBox">
+        <div id="chatHeader">VaishaliTech Chatbot</div>
+        <div id="messages"></div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+    <div class="footer">
+        &copy; 2024 IT Company | All Rights Reserved | ISO Certified 2009
+    </div>
+
+    <script>
+        function displayMessage(message, sender) {
+            const chatBox = document.getElementById('messages');
+            const div = document.createElement('div');
+            div.classList.add('chat-message');
+            div.classList.add(sender);
+            div.textContent = message;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim()) {
+                displayMessage(userInput, 'user');
+                document.getElementById('userInput').value = '';
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userInput })
+                })
+                .then(response => response.json())
+                .then(data => displayMessage(data.response, 'bot'))
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+</body>
+</html>
